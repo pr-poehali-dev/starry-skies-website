@@ -202,91 +202,164 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Фильтры по секциям */}
+        {/* Фильтры по поколениям */}
         <div className="flex flex-wrap justify-center gap-3 mb-8">
           <Button
-            variant={selectedSection === null ? "default" : "outline"}
-            onClick={() => setSelectedSection(null)}
-            className="bg-memorial-dark hover:bg-memorial-gray text-memorial-white"
+            variant="default"
+            className="bg-stellar-soul hover:bg-stellar-soul/80 text-stellar-white"
           >
-            Все секции
+            Все поколения
           </Button>
-          {sections.map((section) => (
-            <Button
-              key={section}
-              variant={selectedSection === section ? "default" : "outline"}
-              onClick={() => setSelectedSection(section)}
-              className="border-memorial-border hover:bg-memorial-light"
-            >
-              Секция {section}
-            </Button>
-          ))}
+          <Button
+            variant="outline"
+            className="border-stellar-connection hover:bg-stellar-connection/30 text-stellar-white"
+          >
+            Первое поколение
+          </Button>
+          <Button
+            variant="outline"
+            className="border-stellar-connection hover:bg-stellar-connection/30 text-stellar-white"
+          >
+            Второе поколение
+          </Button>
+        </div>
+
+        {/* Генеалогическое дерево */}
+        <div className="mb-12">
+          <Card className="bg-stellar-deep/30 border-stellar-connection/30 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="text-stellar-white font-montserrat flex items-center gap-2">
+                <Icon name="GitBranch" className="w-6 h-6 text-stellar-light" />
+                Генеалогическое дерево — Созвездие семьи
+              </CardTitle>
+              <CardDescription className="text-stellar-white/70">
+                Связи между душами, объединенные любовью и памятью
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="relative h-96 overflow-hidden rounded-lg bg-stellar-void/20">
+                {/* Связи между звездами-родственниками */}
+                <svg className="absolute inset-0 w-full h-full">
+                  {connections.map((connection) => (
+                    <line
+                      key={connection.id}
+                      x1={`${connection.from.x}%`}
+                      y1={`${connection.from.y}%`}
+                      x2={`${connection.to.x}%`}
+                      y2={`${connection.to.y}%`}
+                      stroke="hsl(var(--stellar-soul))"
+                      strokeWidth="2"
+                      strokeDasharray="5,5"
+                      className="animate-pulse"
+                      opacity="0.6"
+                    />
+                  ))}
+                </svg>
+
+                {/* Звезды-родственники */}
+                {familyData.map((person) => (
+                  <div
+                    key={person.id}
+                    className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
+                    style={{
+                      left: `${person.position.x}%`,
+                      top: `${person.position.y}%`
+                    }}
+                    onClick={() => setSelectedPerson(selectedPerson === person.id ? null : person.id)}
+                  >
+                    <div className="relative">
+                      <div className="w-6 h-6 bg-stellar-soul rounded-full animate-pulse shadow-lg shadow-stellar-soul/50" />
+                      <div className="absolute inset-0 w-6 h-6 bg-stellar-soul rounded-full animate-ping opacity-75" />
+                    </div>
+                    
+                    {/* Информация о душе */}
+                    <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                      <div className="bg-stellar-deep/90 backdrop-blur-sm text-stellar-white px-4 py-3 rounded-lg border border-stellar-connection/30 whitespace-nowrap">
+                        <div className="font-semibold font-montserrat">
+                          {person.firstName} {person.lastName}
+                        </div>
+                        <div className="text-stellar-light text-sm">
+                          {person.birthDate} - {person.deathDate}
+                        </div>
+                        <div className="text-stellar-white/70 text-xs mt-1">
+                          {person.section}-{person.row}-{person.grave}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Легенда */}
+                <div className="absolute bottom-4 left-4 bg-stellar-deep/80 backdrop-blur-sm rounded-lg p-3 border border-stellar-connection/30">
+                  <div className="text-stellar-white text-sm font-montserrat mb-2">Легенда:</div>
+                  <div className="flex items-center gap-2 text-stellar-white/70 text-xs mb-1">
+                    <div className="w-3 h-3 bg-stellar-soul rounded-full animate-pulse" />
+                    <span>Душа усопшего</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-stellar-white/70 text-xs">
+                    <div className="w-4 h-px bg-stellar-soul opacity-60" style={{ borderTop: '2px dashed' }} />
+                    <span>Родственная связь</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Результаты поиска */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {filteredMemorials.map((person) => (
-            <Card 
-              key={person.id} 
-              className="border-memorial-border hover:border-memorial-gold transition-colors cursor-pointer group"
-            >
-              <CardHeader className="p-0">
-                <div className="relative h-64 overflow-hidden">
-                  <img 
-                    src={person.photo} 
-                    alt={`${person.firstName} ${person.lastName}`}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute top-4 right-4 bg-memorial-dark/80 text-memorial-white px-3 py-1 rounded-full text-sm">
-                    {person.section}-{person.row}-{person.grave}
+        {searchQuery && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {filteredPeople.map((person) => (
+              <Card 
+                key={person.id} 
+                className="bg-stellar-deep/30 border-stellar-connection/30 hover:border-stellar-soul/50 transition-all duration-300 group backdrop-blur-sm"
+              >
+                <CardHeader className="p-0">
+                  <div className="relative h-64 overflow-hidden">
+                    <img 
+                      src={person.photo} 
+                      alt={`${person.firstName} ${person.lastName}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-stellar-void/80 via-transparent to-transparent" />
+                    <div className="absolute top-4 right-4 bg-stellar-deep/80 text-stellar-white px-3 py-1 rounded-full text-sm backdrop-blur-sm">
+                      {person.section}-{person.row}-{person.grave}
+                    </div>
+                    <div className="absolute bottom-4 left-4 text-stellar-white">
+                      <h3 className="font-bold font-montserrat text-lg">
+                        {person.firstName} {person.lastName}
+                      </h3>
+                      <p className="text-stellar-light text-sm">
+                        {person.birthDate} - {person.deathDate}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <CardTitle className="text-memorial-dark mb-2 font-montserrat text-xl">
-                  {person.firstName} {person.lastName}
-                </CardTitle>
-                <CardDescription className="text-memorial-gray mb-1">
-                  {person.middleName}
-                </CardDescription>
-                
-                <div className="flex items-center gap-2 mb-3 text-memorial-gray">
-                  <Icon name="Calendar" className="w-4 h-4" />
-                  <span className="text-sm">
-                    {person.birthDate} - {person.deathDate}
-                  </span>
-                </div>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <p className="text-stellar-white/70 text-sm mb-4 line-clamp-3">
+                    {person.biography}
+                  </p>
 
-                <div className="flex items-center gap-2 mb-4 text-memorial-gray">
-                  <Icon name="MapPin" className="w-4 h-4" />
-                  <span className="text-sm">
-                    Секция {person.section}, ряд {person.row}, место {person.grave}
-                  </span>
-                </div>
-
-                <p className="text-memorial-gray text-sm mb-4 line-clamp-3">
-                  {person.biography}
-                </p>
-
-                <div className="flex gap-2">
-                  <Button 
-                    size="sm" 
-                    className="bg-memorial-gold hover:bg-memorial-gold/80 text-memorial-dark flex-1"
-                  >
-                    Подробнее
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline"
-                    className="border-memorial-border hover:bg-memorial-light"
-                  >
-                    <Icon name="Users" className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      size="sm" 
+                      className="bg-stellar-soul hover:bg-stellar-soul/80 text-stellar-white flex-1"
+                    >
+                      Светлая память
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      className="border-stellar-connection hover:bg-stellar-connection/30 text-stellar-light"
+                    >
+                      <Icon name="Users" className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
 
         {/* Общая информация */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
