@@ -8,9 +8,9 @@ import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const [selectedPerson, setSelectedPerson] = useState<number | null>(null);
 
-  const memorialData = [
+  const familyData = [
     {
       id: 1,
       firstName: 'Александр',
@@ -23,7 +23,9 @@ const Index = () => {
       grave: 5,
       biography: 'Ветеран Великой Отечественной войны, инженер-строитель. Участвовал в строительстве многих объектов в городе. Заслуженный работник народного хозяйства.',
       photo: '/img/728308f2-b7d7-44aa-b1b9-f1c4e0790e4d.jpg',
-      relatives: ['Мария Иванова (супруга)', 'Сергей Иванов (сын)', 'Елена Петрова (дочь)']
+      relatives: [2, 3, 4],
+      generation: 1,
+      position: { x: 50, y: 20 }
     },
     {
       id: 2,
@@ -37,28 +39,47 @@ const Index = () => {
       grave: 6,
       biography: 'Учительница начальных классов, отличник народного просвещения. Воспитала не одно поколение детей. Любящая мать и бабушка.',
       photo: '/img/ca746e9a-51b9-452a-ba7d-8baa45044784.jpg',
-      relatives: ['Александр Иванов (супруг)', 'Сергей Иванов (сын)', 'Елена Петрова (дочь)']
+      relatives: [1, 3, 4],
+      generation: 1,
+      position: { x: 70, y: 20 }
     },
     {
       id: 3,
-      firstName: 'Владимир',
-      lastName: 'Петров',
-      middleName: 'Николаевич',
-      birthDate: '1928-11-03',
-      deathDate: '2015-08-30',
+      firstName: 'Сергей',
+      lastName: 'Иванов',
+      middleName: 'Александрович',
+      birthDate: '1965-05-10',
+      deathDate: '2019-11-22',
       section: 'Б',
       row: 8,
       grave: 12,
-      biography: 'Доктор медицинских наук, хирург высшей категории. Спас множество жизней за свою карьеру. Награжден орденом Трудового Красного Знамени.',
+      biography: 'Программист, работал в IT-сфере. Создал несколько успешных проектов. Любил путешествия и фотографию.',
       photo: '/img/728308f2-b7d7-44aa-b1b9-f1c4e0790e4d.jpg',
-      relatives: ['Анна Петрова (супруга)', 'Елена Петрова (дочь)']
+      relatives: [1, 2, 4],
+      generation: 2,
+      position: { x: 40, y: 60 }
+    },
+    {
+      id: 4,
+      firstName: 'Елена',
+      lastName: 'Петрова',
+      middleName: 'Александровна',
+      birthDate: '1968-09-03',
+      deathDate: '2021-06-14',
+      section: 'В',
+      row: 15,
+      grave: 7,
+      biography: 'Врач-педиатр, заведующая детским отделением. Посвятила жизнь заботе о детях. Мать троих детей.',
+      photo: '/img/ca746e9a-51b9-452a-ba7d-8baa45044784.jpg',
+      relatives: [1, 2, 3],
+      generation: 2,
+      position: { x: 80, y: 60 }
     }
   ];
 
-  const filteredMemorials = memorialData.filter(person => 
+  const filteredPeople = familyData.filter(person => 
     `${person.firstName} ${person.lastName} ${person.middleName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    person.biography.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    person.section.toLowerCase().includes(searchQuery.toLowerCase())
+    person.biography.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const navigationItems = [
@@ -70,12 +91,60 @@ const Index = () => {
     { name: 'Ритуальные услуги', icon: 'Heart', path: '/services' }
   ];
 
-  const sections = ['А', 'Б', 'В', 'Г', 'Д'];
+  // Генерация звезд для фона
+  const stars = Array.from({ length: 200 }, (_, i) => ({
+    id: i,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    delay: Math.random() * 5,
+    size: Math.random() * 2 + 1,
+    brightness: Math.random() * 0.8 + 0.2
+  }));
+
+  // Генерация связей между родственниками
+  const generateConnections = () => {
+    const connections = [];
+    familyData.forEach(person => {
+      person.relatives.forEach(relativeId => {
+        const relative = familyData.find(p => p.id === relativeId);
+        if (relative && person.id < relativeId) {
+          connections.push({
+            from: person.position,
+            to: relative.position,
+            id: `${person.id}-${relativeId}`
+          });
+        }
+      });
+    });
+    return connections;
+  };
+
+  const connections = generateConnections();
 
   return (
-    <div className="min-h-screen bg-memorial-white">
+    <div className="min-h-screen bg-stellar-void relative overflow-hidden">
+      {/* Звездное небо - каждая звезда это душа */}
+      <div className="absolute inset-0 overflow-hidden">
+        {stars.map((star) => (
+          <div
+            key={star.id}
+            className="absolute rounded-full bg-stellar-soul animate-twinkle"
+            style={{
+              left: `${star.left}%`,
+              top: `${star.top}%`,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              animationDelay: `${star.delay}s`,
+              opacity: star.brightness
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Туманность на заднем плане */}
+      <div className="absolute inset-0 bg-gradient-to-br from-stellar-soul/5 via-transparent to-stellar-light/5" />
       {/* Заголовок и навигация */}
-      <header className="bg-memorial-dark text-memorial-white shadow-lg">
+      <header className="relative z-10 bg-stellar-deep/80 backdrop-blur-sm text-stellar-white shadow-lg border-b border-stellar-connection/30">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">

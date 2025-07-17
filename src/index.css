@@ -6,41 +6,43 @@
 
 @layer base {
   :root {
-    --background: 218 32% 12%;
+    --background: 220 39% 11%;
     --foreground: 0 0% 100%;
 
-    --card: 220 39% 11%;
+    --card: 222 47% 11%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 220 39% 11%;
+    --popover: 222 47% 11%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 330 81% 60%;
+    --primary: 268 100% 76%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 240 21% 20%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 240 21% 20%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 330 81% 60%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 43 100% 70%;
+    --accent-foreground: 220 39% 11%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 240 21% 20%;
     --input: 240 21% 20%;
-    --ring: 330 81% 60%;
+    --ring: 268 100% 76%;
 
     --radius: 0.5rem;
 
-    --stellar-dark: 218 32% 12%;
-    --stellar-midnight: 220 39% 11%;
-    --stellar-dawn: 330 81% 60%;
-    --stellar-aurora: 326 85% 85%;
+    --stellar-void: 220 39% 11%;
+    --stellar-deep: 222 47% 11%;
+    --stellar-soul: 268 100% 76%;
+    --stellar-light: 43 100% 70%;
     --stellar-white: 0 0% 100%;
+    --stellar-connection: 240 21% 20%;
+    --stellar-glow: 268 100% 76%;
 
     --sidebar-background: 0 0% 98%;
 
