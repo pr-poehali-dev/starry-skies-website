@@ -3,187 +3,215 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const [selectedSection, setSelectedSection] = useState<string | null>(null);
 
-  const sampleDocuments = [
+  const memorialData = [
     {
       id: 1,
-      title: 'Рукопись экспедиции 1847 года',
-      description: 'Дневник исследователя Северного морского пути с детальными записями о погодных условиях и географических особенностях',
-      location: 'Архангельск',
-      coordinates: { lat: 64.5391, lng: 40.5219 },
-      date: '1847-06-15',
-      tags: ['экспедиция', 'география', 'север'],
-      image: '/img/f3e701fa-7468-4c54-932a-806f92ef1a61.jpg'
+      firstName: 'Александр',
+      lastName: 'Иванов',
+      middleName: 'Сергеевич',
+      birthDate: '1935-03-15',
+      deathDate: '2020-12-08',
+      section: 'А',
+      row: 12,
+      grave: 5,
+      biography: 'Ветеран Великой Отечественной войны, инженер-строитель. Участвовал в строительстве многих объектов в городе. Заслуженный работник народного хозяйства.',
+      photo: '/img/728308f2-b7d7-44aa-b1b9-f1c4e0790e4d.jpg',
+      relatives: ['Мария Иванова (супруга)', 'Сергей Иванов (сын)', 'Елена Петрова (дочь)']
     },
     {
       id: 2,
-      title: 'Картографические заметки',
-      description: 'Древние карты с указанием торговых путей через Волгу и отметками о важных поселениях',
-      location: 'Нижний Новгород',
-      coordinates: { lat: 56.2965, lng: 43.9361 },
-      date: '1654-08-22',
-      tags: ['карты', 'торговля', 'волга'],
-      image: '/img/31fc7ab9-b75a-4771-a7bf-baf3390d06d7.jpg'
+      firstName: 'Мария',
+      lastName: 'Иванова',
+      middleName: 'Петровна',
+      birthDate: '1940-07-22',
+      deathDate: '2018-04-15',
+      section: 'А',
+      row: 12,
+      grave: 6,
+      biography: 'Учительница начальных классов, отличник народного просвещения. Воспитала не одно поколение детей. Любящая мать и бабушка.',
+      photo: '/img/ca746e9a-51b9-452a-ba7d-8baa45044784.jpg',
+      relatives: ['Александр Иванов (супруг)', 'Сергей Иванов (сын)', 'Елена Петрова (дочь)']
     },
     {
       id: 3,
-      title: 'Путевые заметки купца',
-      description: 'Записи о путешествии по Сибирскому тракту с описанием городов, цен на товары и особенностей местного быта',
-      location: 'Екатеринбург',
-      coordinates: { lat: 56.8431, lng: 60.6454 },
-      date: '1789-03-10',
-      tags: ['путешествие', 'торговля', 'сибирь'],
-      image: '/img/3240fc6d-e8df-4d8e-9d59-ee5891ce7ead.jpg'
+      firstName: 'Владимир',
+      lastName: 'Петров',
+      middleName: 'Николаевич',
+      birthDate: '1928-11-03',
+      deathDate: '2015-08-30',
+      section: 'Б',
+      row: 8,
+      grave: 12,
+      biography: 'Доктор медицинских наук, хирург высшей категории. Спас множество жизней за свою карьеру. Награжден орденом Трудового Красного Знамени.',
+      photo: '/img/728308f2-b7d7-44aa-b1b9-f1c4e0790e4d.jpg',
+      relatives: ['Анна Петрова (супруга)', 'Елена Петрова (дочь)']
     }
   ];
 
-  const filteredDocuments = sampleDocuments.filter(doc => 
-    doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    doc.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    doc.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    doc.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredMemorials = memorialData.filter(person => 
+    `${person.firstName} ${person.lastName} ${person.middleName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    person.biography.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    person.section.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const stars = Array.from({ length: 100 }, (_, i) => ({
-    id: i,
-    left: Math.random() * 100,
-    top: Math.random() * 100,
-    delay: Math.random() * 3
-  }));
+  const navigationItems = [
+    { name: 'Информация', icon: 'Info', path: '/info' },
+    { name: 'Карта', icon: 'Map', path: '/map' },
+    { name: 'Расширенный поиск', icon: 'Search', path: '/search' },
+    { name: 'Вход', icon: 'LogIn', path: '/login' },
+    { name: 'Родственники', icon: 'Users', path: '/relatives' },
+    { name: 'Ритуальные услуги', icon: 'Heart', path: '/services' }
+  ];
+
+  const sections = ['А', 'Б', 'В', 'Г', 'Д'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stellar-dark via-stellar-midnight to-stellar-dark relative overflow-hidden font-open-sans">
-      {/* Звездное небо */}
-      <div className="absolute inset-0 overflow-hidden">
-        {stars.map((star) => (
-          <div
-            key={star.id}
-            className="absolute w-1 h-1 bg-stellar-white rounded-full animate-twinkle"
-            style={{
-              left: `${star.left}%`,
-              top: `${star.top}%`,
-              animationDelay: `${star.delay}s`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Градиент рассвета */}
-      <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-stellar-glow opacity-30" />
+    <div className="min-h-screen bg-memorial-white">
+      {/* Заголовок и навигация */}
+      <header className="bg-memorial-dark text-memorial-white shadow-lg">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <Icon name="Church" className="w-8 h-8 text-memorial-gold" />
+              <h1 className="text-2xl font-bold font-montserrat">Мемориальный комплекс</h1>
+            </div>
+            <Button variant="outline" className="border-memorial-gold text-memorial-gold hover:bg-memorial-gold hover:text-memorial-dark">
+              <Icon name="Phone" className="w-4 h-4 mr-2" />
+              Связаться с нами
+            </Button>
+          </div>
+          
+          <nav className="flex flex-wrap gap-2">
+            {navigationItems.map((item) => (
+              <Button
+                key={item.name}
+                variant="ghost"
+                className="text-memorial-white hover:bg-memorial-gray/20 hover:text-memorial-gold transition-colors"
+              >
+                <Icon name={item.icon} className="w-4 h-4 mr-2" />
+                {item.name}
+              </Button>
+            ))}
+          </nav>
+        </div>
+      </header>
 
       {/* Основной контент */}
-      <div className="relative z-10 container mx-auto px-4 py-8">
-        {/* Заголовок */}
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-5xl font-bold text-stellar-white mb-4 font-montserrat">
-            Stellar Archive
-          </h1>
-          <p className="text-xl text-stellar-aurora mb-2">
-            Архив исторических документов
-          </p>
-          <p className="text-stellar-white/70 text-lg">
-            Исследуйте историю через координаты времени и места
-          </p>
-        </div>
-
-        {/* Поисковая панель */}
-        <div className="max-w-2xl mx-auto mb-12">
-          <div className="relative group">
-            <Input
-              type="text"
-              placeholder="Поиск по документам, локациям, тегам..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 pr-4 py-6 text-lg bg-stellar-midnight/50 border-stellar-dawn/30 text-stellar-white placeholder:text-stellar-white/50 focus:border-stellar-dawn focus:ring-stellar-dawn/20 backdrop-blur-sm"
-            />
-            <Icon 
-              name="Search" 
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 text-stellar-dawn w-5 h-5" 
-            />
+      <main className="container mx-auto px-4 py-8">
+        {/* Поиск */}
+        <div className="mb-8">
+          <div className="text-center mb-6">
+            <h2 className="text-3xl font-bold text-memorial-dark mb-2 font-montserrat">
+              Поиск захоронений
+            </h2>
+            <p className="text-memorial-gray">
+              Найдите место захоронения ваших близких и родственников
+            </p>
+          </div>
+          
+          <div className="max-w-2xl mx-auto">
+            <div className="relative">
+              <Input
+                type="text"
+                placeholder="Введите имя, фамилию или отчество..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 pr-4 py-6 text-lg border-memorial-border focus:border-memorial-gold focus:ring-memorial-gold/20"
+              />
+              <Icon 
+                name="Search" 
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-memorial-gray w-5 h-5" 
+              />
+            </div>
           </div>
         </div>
 
-        {/* Быстрые фильтры */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
-          {['экспедиция', 'карты', 'торговля', 'путешествие', 'география'].map((tag) => (
-            <Badge
-              key={tag}
-              variant="secondary"
-              className="px-4 py-2 bg-stellar-midnight/40 text-stellar-white hover:bg-stellar-dawn/20 border-stellar-dawn/30 cursor-pointer transition-all duration-300"
-              onClick={() => setSearchQuery(tag)}
+        {/* Фильтры по секциям */}
+        <div className="flex flex-wrap justify-center gap-3 mb-8">
+          <Button
+            variant={selectedSection === null ? "default" : "outline"}
+            onClick={() => setSelectedSection(null)}
+            className="bg-memorial-dark hover:bg-memorial-gray text-memorial-white"
+          >
+            Все секции
+          </Button>
+          {sections.map((section) => (
+            <Button
+              key={section}
+              variant={selectedSection === section ? "default" : "outline"}
+              onClick={() => setSelectedSection(section)}
+              className="border-memorial-border hover:bg-memorial-light"
             >
-              {tag}
-            </Badge>
+              Секция {section}
+            </Button>
           ))}
         </div>
 
         {/* Результаты поиска */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {filteredDocuments.map((doc) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {filteredMemorials.map((person) => (
             <Card 
-              key={doc.id} 
-              className="bg-stellar-midnight/30 border-stellar-dawn/30 hover:border-stellar-dawn/50 transition-all duration-300 group backdrop-blur-sm animate-fade-in"
+              key={person.id} 
+              className="border-memorial-border hover:border-memorial-gold transition-colors cursor-pointer group"
             >
               <CardHeader className="p-0">
-                <div className="relative h-48 overflow-hidden rounded-t-lg">
+                <div className="relative h-64 overflow-hidden">
                   <img 
-                    src={doc.image} 
-                    alt={doc.title}
+                    src={person.photo} 
+                    alt={`${person.firstName} ${person.lastName}`}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="absolute top-4 right-4 bg-stellar-midnight/80 backdrop-blur-sm rounded-full p-2">
-                    <Icon name="MapPin" className="w-4 h-4 text-stellar-dawn" />
+                  <div className="absolute top-4 right-4 bg-memorial-dark/80 text-memorial-white px-3 py-1 rounded-full text-sm">
+                    {person.section}-{person.row}-{person.grave}
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="p-6">
-                <CardTitle className="text-stellar-white mb-2 font-montserrat">
-                  {doc.title}
+                <CardTitle className="text-memorial-dark mb-2 font-montserrat text-xl">
+                  {person.firstName} {person.lastName}
                 </CardTitle>
-                <CardDescription className="text-stellar-white/70 mb-4 line-clamp-3">
-                  {doc.description}
+                <CardDescription className="text-memorial-gray mb-1">
+                  {person.middleName}
                 </CardDescription>
                 
-                <div className="flex items-center gap-2 mb-3 text-stellar-aurora">
-                  <Icon name="MapPin" className="w-4 h-4" />
-                  <span className="text-sm">{doc.location}</span>
-                </div>
-
-                <div className="flex items-center gap-2 mb-4 text-stellar-aurora">
+                <div className="flex items-center gap-2 mb-3 text-memorial-gray">
                   <Icon name="Calendar" className="w-4 h-4" />
-                  <span className="text-sm">{doc.date}</span>
+                  <span className="text-sm">
+                    {person.birthDate} - {person.deathDate}
+                  </span>
                 </div>
 
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {doc.tags.map((tag) => (
-                    <Badge 
-                      key={tag} 
-                      variant="outline" 
-                      className="text-xs border-stellar-dawn/50 text-stellar-dawn"
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
+                <div className="flex items-center gap-2 mb-4 text-memorial-gray">
+                  <Icon name="MapPin" className="w-4 h-4" />
+                  <span className="text-sm">
+                    Секция {person.section}, ряд {person.row}, место {person.grave}
+                  </span>
                 </div>
+
+                <p className="text-memorial-gray text-sm mb-4 line-clamp-3">
+                  {person.biography}
+                </p>
 
                 <div className="flex gap-2">
                   <Button 
                     size="sm" 
-                    className="bg-stellar-dawn hover:bg-stellar-dawn/80 text-stellar-white flex-1"
+                    className="bg-memorial-gold hover:bg-memorial-gold/80 text-memorial-dark flex-1"
                   >
                     Подробнее
                   </Button>
                   <Button 
                     size="sm" 
                     variant="outline"
-                    className="border-stellar-dawn/50 text-stellar-dawn hover:bg-stellar-dawn/10"
+                    className="border-memorial-border hover:bg-memorial-light"
                   >
-                    <Icon name="Map" className="w-4 h-4" />
+                    <Icon name="Users" className="w-4 h-4" />
                   </Button>
                 </div>
               </CardContent>
@@ -191,82 +219,97 @@ const Index = () => {
           ))}
         </div>
 
-        {/* Интерактивная карта */}
-        <Card className="bg-stellar-midnight/30 border-stellar-dawn/30 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="text-stellar-white font-montserrat flex items-center gap-2">
-              <Icon name="Globe" className="w-5 h-5 text-stellar-dawn" />
-              Интерактивная карта
-            </CardTitle>
-            <CardDescription className="text-stellar-white/70">
-              Географическое расположение документов
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-96 bg-stellar-midnight/20 rounded-lg relative overflow-hidden">
-              {/* Стилизованная карта России */}
-              <div className="absolute inset-0 bg-gradient-to-br from-stellar-midnight/40 to-stellar-dark/60">
-                {/* Точки документов на карте */}
-                {sampleDocuments.map((doc, index) => (
-                  <div
-                    key={doc.id}
-                    className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
-                    style={{
-                      left: `${20 + index * 25}%`,
-                      top: `${30 + index * 20}%`
-                    }}
-                    onClick={() => setSelectedLocation(selectedLocation === doc.location ? null : doc.location)}
-                  >
-                    <div className="relative">
-                      <div className="w-3 h-3 bg-stellar-dawn rounded-full animate-pulse" />
-                      <div className="absolute inset-0 w-3 h-3 bg-stellar-dawn rounded-full animate-ping opacity-75" />
-                    </div>
-                    
-                    {/* Всплывающая подсказка */}
-                    <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                      <div className="bg-stellar-midnight/90 backdrop-blur-sm text-stellar-white px-3 py-2 rounded-lg text-sm whitespace-nowrap border border-stellar-dawn/30">
-                        <div className="font-semibold">{doc.location}</div>
-                        <div className="text-stellar-aurora text-xs">{doc.date}</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                
-                {/* Координатная сетка */}
-                <div className="absolute inset-0 opacity-20">
-                  {Array.from({ length: 8 }, (_, i) => (
-                    <div
-                      key={`v-${i}`}
-                      className="absolute top-0 bottom-0 w-px bg-stellar-dawn/20"
-                      style={{ left: `${i * 12.5}%` }}
-                    />
-                  ))}
-                  {Array.from({ length: 6 }, (_, i) => (
-                    <div
-                      key={`h-${i}`}
-                      className="absolute left-0 right-0 h-px bg-stellar-dawn/20"
-                      style={{ top: `${i * 16.67}%` }}
-                    />
-                  ))}
+        {/* Общая информация */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="border-memorial-border">
+            <CardHeader>
+              <CardTitle className="text-memorial-dark font-montserrat flex items-center gap-2">
+                <Icon name="Info" className="w-5 h-5 text-memorial-gold" />
+                О кладбище
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-memorial-gray mb-4">
+                Городское кладбище основано в 1887 году. Здесь покоятся выдающиеся деятели 
+                города, ветераны войн, простые труженики. Общая площадь составляет 15 гектаров.
+              </p>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Icon name="Clock" className="w-4 h-4 text-memorial-gold" />
+                  <span className="text-sm">Режим работы: 8:00 - 18:00</span>
                 </div>
-                
-                {/* Индикатор выбранной локации */}
-                {selectedLocation && (
-                  <div className="absolute bottom-4 left-4 bg-stellar-midnight/80 backdrop-blur-sm rounded-lg p-3 border border-stellar-dawn/30">
-                    <div className="text-stellar-white font-semibold text-sm">
-                      {selectedLocation}
-                    </div>
-                    <div className="text-stellar-aurora text-xs">
-                      {sampleDocuments.find(doc => doc.location === selectedLocation)?.coordinates.lat.toFixed(4)}°N,{' '}
-                      {sampleDocuments.find(doc => doc.location === selectedLocation)?.coordinates.lng.toFixed(4)}°E
-                    </div>
-                  </div>
-                )}
+                <div className="flex items-center gap-2">
+                  <Icon name="MapPin" className="w-4 h-4 text-memorial-gold" />
+                  <span className="text-sm">г. Москва, ул. Мемориальная, 15</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-memorial-border">
+            <CardHeader>
+              <CardTitle className="text-memorial-dark font-montserrat flex items-center gap-2">
+                <Icon name="Map" className="w-5 h-5 text-memorial-gold" />
+                Карта кладбища
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-48 bg-memorial-light rounded-lg flex items-center justify-center mb-4">
+                <div className="text-center">
+                  <Icon name="Map" className="w-12 h-12 text-memorial-gold mx-auto mb-2" />
+                  <p className="text-memorial-gray">
+                    Интерактивная карта
+                  </p>
+                  <p className="text-memorial-gray text-sm">
+                    Показывает расположение секций и захоронений
+                  </p>
+                </div>
+              </div>
+              <Button className="w-full bg-memorial-gold hover:bg-memorial-gold/80 text-memorial-dark">
+                Открыть карту
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+
+      {/* Футер */}
+      <footer className="bg-memorial-dark text-memorial-white mt-12">
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="font-bold mb-4 font-montserrat">Контакты</h3>
+              <div className="space-y-2 text-memorial-gray">
+                <p>+7 (495) 123-45-67</p>
+                <p>info@memorial.ru</p>
+                <p>г. Москва, ул. Мемориальная, 15</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <div>
+              <h3 className="font-bold mb-4 font-montserrat">Услуги</h3>
+              <div className="space-y-2 text-memorial-gray">
+                <p>Захоронение</p>
+                <p>Уход за могилами</p>
+                <p>Ритуальные услуги</p>
+                <p>Изготовление памятников</p>
+              </div>
+            </div>
+            <div>
+              <h3 className="font-bold mb-4 font-montserrat">Информация</h3>
+              <div className="space-y-2 text-memorial-gray">
+                <p>Режим работы</p>
+                <p>Правила посещения</p>
+                <p>История кладбища</p>
+                <p>Генеалогические услуги</p>
+              </div>
+            </div>
+          </div>
+          <Separator className="my-6 bg-memorial-gray" />
+          <div className="text-center text-memorial-gray">
+            <p>&copy; 2024 Мемориальный комплекс. Все права защищены.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
